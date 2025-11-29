@@ -6,11 +6,15 @@ COPY *.js .
 RUN npm install
 
 FROM node:20.19.6-alpine3.21 
+RUN addgroup -S roboshop && adduser -S roboshop -G roboshop
+RUN chown roboshop:roboshop /opt/server
 WORKDIR /opt/server
 COPY --from=build /opt/server /opt/server
 ENV MONGO="true"\
     MONGO_URL="mongodb://mongodb:27017/catalogue"
-CMD ["node","server.js"]
+USER roboshop
+CMD ["server.js"]
+ENTRYPOINT ["node"]
 
 
 
